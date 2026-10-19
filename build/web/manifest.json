@@ -1,0 +1,27 @@
+{
+  "name": "Siya9a Maroc 3D - تعليم السياقة بالمغرب",
+  "short_name": "Siya9a 3D",
+  "description": "لعبة محاكاة تعليم السياقة 3D في المغرب (كازا - لوطوروت A1 - الرباط) باللومبرياج، الفيتيس، الفولان، البولات والمرايات. تشتغل بدون إنترنت على آيفون 13.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "landscape",
+  "background_color": "#0b1120",
+  "theme_color": "#b91c1c",
+  "lang": "ar-MA",
+  "dir": "rtl",
+  "icons": [
+    {
+      "src": "index.apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "index.icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="50%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <circle cx="256" cy="256" r="165" fill="none" stroke="#f8fafc" stroke-width="28"/>
+  <circle cx="256" cy="256" r="46" fill="#16a34a" stroke="#f8fafc" stroke-width="10"/>
+  <rect x="242" y="76" width="28" height="36" rx="8" fill="#ef4444"/>
+  <line x1="95" y1="256" x2="210" y2="256" stroke="#f8fafc" stroke-width="24" stroke-linecap="round"/>
+  <line x1="302" y1="256" x2="417" y2="256" stroke="#f8fafc" stroke-width="24" stroke-linecap="round"/>
+  <line x1="256" y1="302" x2="256" y2="415" stroke="#f8fafc" stroke-width="24" stroke-linecap="round"/>
+  <text x="256" y="476" font-family="Arial, sans-serif" font-size="42" font-weight="bold" fill="#facc15" text-anchor="middle">SIYA9A 3D</text>
+</svg>

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="apple-mobile-web-app-title" content="Siya9a 3D">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="theme-color" content="#0b1120">
+	<title>Siya9a Maroc 3D - تعليم السياقة بالمغرب (آيفون 13)</title>
+	<link rel="manifest" href="manifest.json">
+	<link id="-gd-engine-icon" rel="icon" type="image/png" href="index.icon.png" />
+	<link rel="apple-touch-icon" href="index.apple-touch-icon.png"/>
+	<style>
+		* {
+			box-sizing: border-box;
+			-webkit-tap-highlight-color: transparent;
+			-webkit-touch-callout: none;
+			user-select: none;
+			-webkit-user-select: none;
+		}
+		html, body, #canvas {
+			margin: 0;
+			padding: 0;
+			border: 0;
+			width: 100%;
+			height: 100%;
+		}
+		body {
+			color: #f8fafc;
+			background-color: #0b1120;
+			overflow: hidden;
+			touch-action: none;
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, Arial, sans-serif;
+		}
+		#canvas {
+			display: block;
+			width: 100vw !important;
+			height: 100vh !important;
+		}
+		#canvas:focus {
+			outline: none;
+		}
+		/* Loading & Local Caching Overlay */
+		#status {
+			position: fixed;
+			inset: 0;
+			background: radial-gradient(circle at center, #1e293b 0%, #090d16 100%);
+			display: flex;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			z-index: 50;
+			padding: 20px;
+			text-align: center;
+		}
+		.brand-card {
+			background: rgba(15, 23, 42, 0.9);
+			border: 2px solid #ef4444;
+			border-radius: 18px;
+			padding: 22px 28px;
+			max-width: 520px;
+			width: 92%;
+			box-shadow: 0 20px 50px rgba(0,0,0,0.65);
+		}
+		.brand-logo {
+			width: 76px;
+			height: 76px;
+			border-radius: 18px;
+			margin-bottom: 10px;
+			border: 2px solid #facc15;
+		}
+		.brand-title {
+			font-size: 22px;
+			font-weight: 800;
+			color: #facc15;
+			margin: 4px 0;
+		}
+		.brand-sub {
+			font-size: 13px;
+			color: #cbd5e1;
+			margin-bottom: 14px;
+			line-height: 1.5;
+		}
+		.progress-wrap {
+			width: 100%;
+			height: 18px;
+			background: #1e293b;
+			border-radius: 99px;
+			overflow: hidden;
+			border: 1px solid #475569;
+			margin-bottom: 8px;
+		}
+		#status-progress-bar {
+			height: 100%;
+			width: 5%;
+			background: linear-gradient(90deg, #16a34a, #22c55e, #facc15);
+			transition: width 0.2s ease;
+		}
+		#status-pct {
+			font-size: 14px;
+			font-weight: 700;
+			color: #4ade80;
+		}
+		#status-notice {
+			display: none;
+			background-color: #7f1d1d;
+			border-radius: 10px;
+			border: 1px solid #f87171;
+			color: #fecaca;
+			padding: 12px;
+			margin-top: 12px;
+			font-size: 13px;
+		}
+		/* Portrait Orientation Prompt for iPhone 13 (Enforces Paysage / Landscape) */
+		#portrait-warning {
+			display: none;
+			position: fixed;
+			inset: 0;
+			background: rgba(9, 13, 22, 0.96);
+			z-index: 100;
+			flex-direction: column;
+			justify-content: center;
+			align-items: center;
+			padding: 24px;
+			text-align: center;
+		}
+		@media screen and (orientation: portrait) {
+			#portrait-warning.active {
+				display: flex;
+			}
+		}
+		.rotate-icon {
+			font-size: 58px;
+			margin-bottom: 12px;
+			animation: tiltPhone 1.8s infinite ease-in-out;
+		}
+		@keyframes tiltPhone {
+			0%, 100% { transform: rotate(0deg); }
+			50% { transform: rotate(-90deg); }
+		}
+		/* Top-left subtle PWA / Offline Pill */
+		#pwa-pill {
+			position: fixed;
+			bottom: 6px;
+			left: 50%;
+			transform: translateX(-50%);
+			z-index: 30;
+			background: rgba(15, 23, 42, 0.85);
+			border: 1px solid rgba(74, 222, 128, 0.5);
+			color: #e2e8f0;
+			font-size: 11px;
+			padding: 3px 10px;
+			border-radius: 99px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+		#install-modal {
+			display: none;
+			position: fixed;
+			inset: 0;
+			background: rgba(0, 0, 0, 0.82);
+			z-index: 120;
+			justify-content: center;
+			align-items: center;
+			padding: 16px;
+		}
+		.install-box {
+			background: #0f172a;
+			border: 2px solid #facc15;
+			border-radius: 16px;
+			max-width: 460px;
+			width: 100%;
+			padding: 18px;
+			text-align: right;
+		}
+		.btn-primary {
+			background: #16a34a;
+			color: white;
+			border: none;
+			padding: 9px 16px;
+			border-radius: 8px;
+			font-weight: bold;
+			font-size: 13px;
+			cursor: pointer;
+			margin-top: 10px;
+		}
+	</style>
+</head>
+<body>
+	<canvas id="canvas">متصفحك لا يدعم WebGL2.</canvas>
+
+	<!-- Portrait warning so user plays in Paysage (Landscape) on iPhone 13 -->
+	<div id="portrait-warning" class="active">
+		<div class="rotate-icon">📱🔄</div>
+		<h2 style="color:#facc15; margin:6px 0;">دور الآيفون 13 بالعرض (Mode Paysage)</h2>
+		<p style="color:#cbd5e1; max-width:320px; line-height:1.5; font-size:14px;">
+			هاذ اللعبة ديال تعليم السياقة فالمغرب مصاوبة باش تشد الشاشة كاملة بالعرض (Paysage) ويبان ليك الطابلو، المرايات، الفولان، واللومبرياج في اليسار!
+		</p>
+		<button class="btn-primary" onclick="document.getElementById('portrait-warning').classList.remove('active')">
+			كمّل على أي حال 🚗
+		</button>
+	</div>
+
+	<!-- Loading & Local Resource Caching Screen -->
+	<div id="status">
+		<div class="brand-card">
+			<img class="brand-logo" src="index.png" alt="Siya9a Maroc 3D">
+			<div class="brand-title">🇲🇦 Siya9a Maroc 3D</div>
+			<div class="brand-sub">
+				محاكاة تعليم السياقة في المغرب (كازا ↔ لوطوروت A1 ↔ الرباط)<br>
+				اللومبرياج • الفيتيس • الفولان • البولات • المرايات • المونيتور الذكي
+			</div>
+			<div class="progress-wrap">
+				<div id="status-progress-bar"></div>
+			</div>
+			<div id="status-pct">جاري تحميل وتخزين موارد 3D فـ اللوكال (0%)...</div>
+			<div id="status-notice"></div>
+		</div>
+	</div>
+
+	<!-- Offline / Install on iPhone 13 Safari Pill -->
+	<div id="pwa-pill" onclick="document.getElementById('install-modal').style.display='flex'">
+		<span id="offline-dot">🟢</span>
+		<span id="offline-txt">تثبيت على iPhone 13 / يشتغل بلا أنترنيت</span>
+	</div>
+
+	<!-- iPhone 13 Safari Installation Guide Modal -->
+	<div id="install-modal" onclick="if(event.target===this)this.style.display='none'">
+		<div class="install-box">
+			<h3 style="color:#facc15; margin-top:0;">📲 كيفاش تـأنصطالي اللعبة فـ iPhone 13 وتخدم بلا أنترنيت؟</h3>
+			<p style="font-size:13px; line-height:1.6; color:#e2e8f0;">
+				1️⃣ اللعبة دابا كتخزن كاع ملفات 3D والخرائط فـ الذاكرة المحلية ديال Safari تلقائياً.<br>
+				2️⃣ فـ Safari على الآيفون 13، ورك على زر <strong>المشاركة (Partager / Share ⬆️)</strong> لتحت.<br>
+				3️⃣ ختار <strong>«Sur l'écran d'accueil / إضافة إلى الشاشة الرئيسية ➕»</strong>.<br>
+				4️⃣ صافي! غتولي عندك أيقونة <strong>Siya9a 3D</strong> فـ الآيفون، كتحل بالعرض (Paysage) Fullscreen وكتخدم 100% بلا أنترنيت!
+			</p>
+			<button class="btn-primary" onclick="document.getElementById('install-modal').style.display='none'">فهمت، شكراً! ✅</button>
+		</div>
+	</div>
+
+	<script src="index.js"></script>
+	<script>
+		// Register Offline Service Worker for local caching on iPhone 13 Safari
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', () => {
+				navigator.serviceWorker.register('./sw.js').then((reg) => {
+					console.log('[PWA] Service Worker registered:', reg.scope);
+					document.getElementById('offline-txt').textContent = 'محفوظ فـ اللوكال (خدام بلا أنترنيت ✅) • تثبيت عالآيفون';
+				}).catch((err) => {
+					console.warn('[PWA] SW error:', err);
+				});
+			});
+		}
+
+		// Try locking orientation to landscape where supported
+		if (screen.orientation && screen.orientation.lock) {
+			screen.orientation.lock('landscape').catch(() => {});
+		}
+
+		const GODOT_CONFIG = {
+			"args": [],
+			"canvasResizePolicy": 2,
+			"emscriptenPoolSize": 8,
+			"ensureCrossOriginIsolationHeaders": false,
+			"executable": "index",
+			"experimentalVK": false,
+			"fileSizes": {"index.pck": 828700, "index.wasm": 39513091},
+			"focusCanvas": true,
+			"gdextensionLibs": [],
+			"godotPoolSize": 4
+		};
+		const GODOT_THREADS_ENABLED = false;
+		const engine = new Engine(GODOT_CONFIG);
+
+		(function () {
+			const statusOverlay = document.getElementById('status');
+			const progressBar = document.getElementById('status-progress-bar');
+			const statusPct = document.getElementById('status-pct');
+			const statusNotice = document.getElementById('status-notice');
+
+			function displayFailureNotice(err) {
+				console.error(err);
+				statusNotice.style.display = 'block';
+				statusNotice.textContent = (err instanceof Error) ? err.message : String(err);
+			}
+
+			engine.startGame({
+				'onProgress': function (current, total) {
+					if (current > 0 && total > 0) {
+						const pct = Math.min(100, Math.round((current / total) * 100));
+						progressBar.style.width = pct + '%';
+						statusPct.textContent = 'جاري تحميل وتخزين موارد 3D فـ اللوكال (' + pct + '%)...';
+					}
+				},
+			}).then(() => {
+				statusOverlay.style.display = 'none';
+			}, displayFailureNotice);
+		}());
+	</script>
+</body>
+</html>
